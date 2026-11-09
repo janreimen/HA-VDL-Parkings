@@ -1,132 +1,197 @@
-# VDL Parkings – Home Assistant Custom Integration
+# VDL Parkings – Home Assistant Integration
 
-Home Assistant custom integration to monitor the availability and status of public parkings in Luxembourg city (VDL - Ville De Luxembourg) using the public data from [vdl.lu](https://www.vdl.lu/fr/se-deplacer/en-voiture/parkings-et-pr) website.
+A custom integration for [Home Assistant](https://www.home-assistant.io/) that monitors public parking availability in Luxembourg City using data published by [Ville de Luxembourg (VDL)](https://www.vdl.lu/).
 
-> [!WARNING]
-> **Beta version** – This integration is in testing phase 🚧
-> - Features and entities may change between releases.
-> - Use at your own risk and keep regular backups of your Home Assistant configuration.
-> - Please [report issues](https://github.com/techn0phil/vdl-parkings/issues) with logs and details.
+Select the car parks you want to monitor and Home Assistant will automatically create sensors, binary sensors and map zones for them.
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=janreimen&repository=HA-VDL-Parkings&category=integration)
 
-## Table of contents
-
-  - [Features](#features)
-  - [Requirements](#requirements)
-  - [Installation](#installation)
-    - [HACS (recommended)](#hacs-recommended)
-    - [Manual installation](#manual-installation)
-  - [Configuration](#configuration)
-  - [Provided entities](#provided-entities)
-    - [Sensor entities](#sensor-entities)
-    - [Binary sensor entities](#binary-sensor-entities)
-    - [Zone entities](#zone-entities)
-  - [Example usage](#example-usage)
-    - [Simple Lovelace card](#simple-lovelace-card)
-    - [Conditional notification when a parking has space](#conditional-notification-when-a-parking-has-space)
-    - [Map view with zones](#map-view-with-zones)
-  - [Screenshots](#screenshots)
-  - [FAQ](#faq)
-  - [Troubleshooting](#troubleshooting)
-  - [Development and contributions](#development-and-contributions)
-
+---
 
 ## Features
 
-- Cloud polling of the public VDL parking data (no account or API key required, only Internet access).
-- Provides sets of entities per parking:
-    - `sensor` entities:
-        - Total capacity
-        - Available spaces
-        - Occupied spaces
-        - Occupancy rate as a percentage
-    - `binary_sensor` entities:
-        - Open
-        - Full
-        - Out of service
-    - A `zone` entity to expose its geolocation (usable for proximity, automations, maps).
-- Configuration via the Home Assistant UI (`config_flow`), no YAML needed.
-
+- **Live parking information** from the public VDL parking data service.
+- **Configurable parking selection** – choose which car parks to monitor during setup.
+- **Automatic polling** every 60 seconds.
+- **Parking sensors** for capacity, available spaces, occupied spaces and occupancy rate.
+- **Parking status sensors** indicating whether a car park is open, full or out of service.
+- **Automatic map zones** – creates a Home Assistant zone for each selected parking location.
+- **Automatic zone management** – reuses existing matching zones, updates zones when coordinates change and removes zones associated with the integration when it is unloaded.
+- **UI-based configuration** – no YAML configuration or API credentials required.
+- **Device grouping** – entities belonging to a parking location are grouped under one Home Assistant device.
 
 ## Requirements
 
-- Home Assistant Core **2026.3.0** or newer.  
-- Working Internet connection to reach the VDL public parking API (cloud polling, `iot_class: cloud_polling`).  
+| Requirement | Version / Details |
+|---|---|
+| Home Assistant Core | 2026.3.0 or newer |
+| Internet connection | Required |
+| VDL account | Not required |
+| API key | Not required |
+| Configuration | Home Assistant UI |
+| Update interval | 60 seconds |
 
+The integration uses Home Assistant's `cloud_polling` model and retrieves information from the public VDL parking data endpoint.
 
 ## Installation
 
 ### HACS (recommended)
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=techn0phil&repository=vdl-parkings&category=integration)
+1. Open **HACS** in Home Assistant.
+2. Open the three-dot menu and select **Custom repositories**.
+3. Add the following repository:
 
-Or:
+   `https://github.com/janreimen/HA-VDL-Parkings`
 
-1. In Home Assistant, go to **HACS → Custom repositories**.
-2. Add this repository URL `https://github.com/techn0phil/vdl-parkings` as type **Integration**.
-3. Search for **VDL Parkings** in HACS and install it.
-4. Restart Home Assistant.
-5. Add the integration from **Settings → Devices & Services → Add integration → VDL Parkings**.
+4. Select **Integration** as the repository category.
+5. Search for **VDL Parkings** and install it.
+6. Restart Home Assistant.
+
+Alternatively, use the button below:
+
+[![Open VDL Parkings in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=janreimen&repository=HA-VDL-Parkings&category=integration)
 
 ### Manual installation
 
 1. Download or clone this repository.
-2. Copy the `custom_components/vdl_parkings` folder into your Home Assistant `config/custom_components` directory.
-3. Ensure the final path is:
-   `config/custom_components/vdl_parkings` (folder name must match the domain).
-4. Restart Home Assistant.
-5. Add the integration from **Settings → Devices & Services → Add integration → VDL Parkings**.
+2. Copy the `custom_components/vdl_parkings` directory into your Home Assistant configuration directory.
+3. Verify that the resulting directory structure is:
 
+   ```text
+   config/
+   └── custom_components/
+       └── vdl_parkings/
+           ├── __init__.py
+           ├── api.py
+           ├── binary_sensor.py
+           ├── config_flow.py
+           ├── const.py
+           ├── coordinator.py
+           ├── manifest.json
+           ├── sensor.py
+           ├── zone.py
+           └── translations/
+   ```
+
+4. Restart Home Assistant.
 
 ## Configuration
 
-The integration is configured entirely from the UI via a **config flow**.
+The integration is configured entirely through the Home Assistant UI.
 
-1. Go to **Settings → Devices & Services → Add integration**.
-2. Search for **VDL Parkings**.
-3. Follow the onboarding steps to:
-   - Select which parkings you want to monitor
-   - Optionally assign areas to selected parkings
+1. Navigate to **Settings → Devices & Services**.
+2. Select **Add Integration**.
+3. Search for **VDL Parkings**.
+4. Select the car parks you want to monitor.
+5. Submit the configuration.
 
-At the moment there is no advanced options exposed in the configuration flow.
+The integration retrieves the current list of public VDL car parks and presents them as a selectable list.
 
+Only the selected locations are added to Home Assistant.
 
-## Provided entities
+No username, password, API key or additional configuration is required.
 
-For each selected parking, the integration creates multiple entities. The exact entity IDs may vary slightly depending on your Home Assistant server language.
+## Entities
 
-### Sensor entities
+For every selected parking location, the integration creates four sensor entities and three binary sensor entities.
 
-| Entity class              | Example entity ID                            | Description                                          |
-|---------------------------|----------------------------------------------|------------------------------------------------------|
-| `ParkingTotalCapacity`    | `sensor.<parking_name>_total_capacity`        | Total number of parking spaces.              |
-| `ParkingAvailableSpaces`  | `sensor.<parking_name>_available_spaces`      | Current number of free spaces.               |
-| `ParkingOccupiedSpaces`   | `sensor.<parking_name>_occupied_spaces`       | Current number of occupied spaces.           |
-| `ParkingOccupancyRate`    | `sensor.<parking_name>_occupancy_rate`        | Percentage of occupied spaces. |
+All entities are grouped under a Home Assistant device representing the corresponding parking location.
 
-### Binary sensor entities
+### Sensors
 
-| Entity class            | Example entity ID                           | Description                                                                 |
-|-------------------------|---------------------------------------------|-----------------------------------------------------------------------------|
-| `ParkingOpen`           | `binary_sensor.<parking_name>_open`          | On when the parking is open, off when closed.                      |
-| `ParkingFull`           | `binary_sensor.<parking_name>_full`          | On when the parking is considered full.                            |
-| `ParkingOutOfService`   | `binary_sensor.<parking_name>_out_of_service`| On when the parking is out of service, closed for maintenance, etc. |
+| Sensor | Description | Example value |
+|---|---|---:|
+| Available spaces | Number of currently available parking spaces | 125 |
+| Total capacity | Total number of parking spaces | 500 |
+| Occupied spaces | Calculated number of occupied spaces | 375 |
+| Occupancy rate | Percentage of occupied spaces | 75% |
 
-### Zone entities
+The occupancy rate is calculated as:
 
-- A `zone` is created for each parking to expose its geolocation in the map and for proximity-based automations.
-- The zone name matches the parking name.
+```text
+Occupancy rate = Occupied spaces / Total capacity × 100
+```
 
+Occupied spaces are calculated as:
+
+```text
+Occupied spaces = Total capacity - Available spaces
+```
+
+The occupancy rate is rounded to the nearest whole percentage.
+
+### Binary sensors
+
+| Sensor | Description | On means |
+|---|---|---|
+| Open | Indicates whether the parking is open | Parking is open |
+| Full | Indicates whether the parking is full | Parking is full |
+| Out of service | Indicates whether the parking is unavailable due to a fault or service issue | Parking is out of service |
+
+The `Out of service` entity is classified as a diagnostic entity in Home Assistant.
+
+### Entity IDs
+
+Home Assistant generates entity IDs based on the parking name and the configured language.
+
+For example, a parking location named `Royal Hamilius` may produce entities such as:
+
+```text
+sensor.royal_hamilius_available_spaces
+sensor.royal_hamilius_total_capacity
+sensor.royal_hamilius_occupied_spaces
+sensor.royal_hamilius_occupancy_rate
+
+binary_sensor.royal_hamilius_open
+binary_sensor.royal_hamilius_full
+binary_sensor.royal_hamilius_out_of_service
+```
+
+The exact IDs may differ depending on Home Assistant's entity registry and naming conventions.
+
+## Automatic parking zones
+
+The integration automatically creates a Home Assistant zone for each selected parking location.
+
+These zones use the geographical coordinates supplied by the VDL data service.
+
+Each zone is created with:
+
+| Property | Value |
+|---|---|
+| Name | `Parking <parking name>` |
+| Latitude | VDL parking coordinates |
+| Longitude | VDL parking coordinates |
+| Radius | 100 metres |
+| Icon | `mdi:parking` |
+
+### Zone management
+
+The integration maintains a mapping between selected parking IDs and their corresponding Home Assistant zone IDs.
+
+This mapping prevents duplicate zones and allows the integration to manage its zones across reloads and configuration changes.
+
+The zone management logic:
+
+- Reuses an existing tracked zone if its coordinates still match.
+- Updates the zone if the parking coordinates change.
+- Looks for an existing parking zone at the same coordinates before creating a new one.
+- Removes zones for parking locations that are no longer selected.
+- Removes tracked zones when the integration is unloaded.
+
+**Note:** Zones are Home Assistant global zones, not sensor entities. They can be used by the standard Home Assistant map, proximity integrations and automations.
+
+If you manually delete a zone, the integration can recreate it during a subsequent setup.
 
 ## Example usage
 
-### Simple Lovelace card
+### 1. Parking availability card
 
-Example: show availability for a single parking using an Entities card:
+A simple Lovelace Entities card showing the current parking situation:
 
 ```yaml
 type: entities
-title: Parking Royal Hamilius
+title: Royal Hamilius
 entities:
   - entity: sensor.royal_hamilius_available_spaces
     name: Available spaces
@@ -134,16 +199,21 @@ entities:
     name: Total capacity
   - entity: sensor.royal_hamilius_occupied_spaces
     name: Occupied spaces
-  - entity: binary_sensor.royal_hamilius_full
-    name: Full
+  - entity: sensor.royal_hamilius_occupancy_rate
+    name: Occupancy rate
   - entity: binary_sensor.royal_hamilius_open
     name: Open
+  - entity: binary_sensor.royal_hamilius_full
+    name: Full
 ```
 
-### Conditional notification when a parking has space
+### 2. Notify when parking spaces become available
+
+Example automation that sends a notification when more than ten parking spaces are available and the parking is open:
 
 ```yaml
 alias: Notify when parking has space
+description: Notify when Royal Hamilius has more than 10 available spaces.
 triggers:
   - trigger: numeric_state
     entity_id: sensor.royal_hamilius_available_spaces
@@ -155,67 +225,39 @@ conditions:
 actions:
   - action: notify.mobile_app_my_phone
     data:
-      message: "Royal Hamilius has more than 10 free parking spaces."
+      message: >
+        Royal Hamilius has more than 10 available parking spaces.
 mode: single
 ```
 
-### Map view with zones
+Replace `notify.mobile_app_my_phone` with your own notification service.
 
-Once zones are created for each parking, you can add the standard **Map** card in Lovelace and enable the parking zones to visualize all monitored parkings on a map.
+### 3. Display parking locations on a map
 
+Once the integration has created the parking zones, they can be displayed using the standard Home Assistant Map card.
 
-## Screenshots
+```yaml
+type: map
+entities:
+  - zone.parking_royal_hamilius
+  - zone.parking_gare
+  - zone.parking_theatre
+```
 
-### Integration page
+Replace the example zone entity IDs with the actual IDs created in your Home Assistant instance.
 
-![VDL Integration screenshot](docs/integration.png)
+### 4. Use parking availability in templates
 
-### Parking entities overview
+Example template sensor showing the number of free parking spaces:
 
-![Parking entities screenshot](docs/entities.png)
+```yaml
+template:
+  - sensor:
+      - name: "Royal Hamilius Free Parking Spaces"
+        unique_id: royal_hamilius_free_parking_spaces
+        unit_of_measurement: "spaces"
+        state: >
+          {{ states('sensor.royal_hamilius_available_spaces') | int(0) }}
+```
 
-### Map view with parking zones
-
-![Parking zones screenshot](docs/map.png)
-
-
-## FAQ
-
-**Does this integration require an account or API key?**
-No. It uses the public data provided by vdl.lu for parking information, so no credentials are required.
-
-**How often is data updated?**
-The integration uses cloud polling at a fixed interval of 60 seconds. The effective refresh rate is limited by both the integration and the VDL API update frequency.
-
-**Can I select which parkings to track?**
-Yes, the configuration flow allows choosing which parkings to monitor.
-
-**Can I change the polling interval or configure advanced options?**
-Not yet. The first versions only provide a minimal UI configuration without extra options. Future releases may add options such as polling interval.
-
-**Does this integration support YAML configuration?**
-No. It is UI-only and uses the recommended `config_flow` for setup.
-
-
-## Troubleshooting
-
-**Integration does not appear in the “Add integration” list**  
-- Check that the folder is named `vdl_parkings` under `custom_components` and that Home Assistant has been restarted.  
-- Clear your browser cache or try another browser.
-
-**No entities are created**  
-- Verify that the config flow has completed successfully and that at least one parking was selected.  
-- Check **Settings → System → Logs** for errors related to `vdl_parkings`.  
-- Ensure that your Home Assistant host has working Internet access to reach the VDL API.
-
-**Data seems outdated or not updating**  
-- Check for rate limiting or connectivity issues in the logs.  
-- Confirm that the source VDL website/API shows up-to-date information.
-
-**Too many entities / clutter**  
-- During setup, only select the parkings that you actually need. You can also disable unnecessary entities from the entity settings in Home Assistant.
-
-
-## Development and contributions
-
-Contributions, bug reports and feature requests are welcome via the [GitHub issue tracker](https://github.com/techn0phil/vdl-parkings/issues). Please include Home Assistant version, integration version, logs and clear reproduction steps when reporting bugs.
+## Data
