@@ -111,7 +111,7 @@ class VdlParkingCoordinator(DataUpdateCoordinator):
             self.last_success = now
             self.last_error = None
             self.consecutive_failures = 0
-            return self.data
+#            return updated
         except Exception as err:
             self.api_reachable = False
             self.last_error = str(err)[:250]

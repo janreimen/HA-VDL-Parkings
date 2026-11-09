@@ -30,9 +30,14 @@ async def create_parking_zones(hass, coordinator, entry):
     all_zones = zone_collection.async_items()
 
     for parking_id in selected:
-        parking = coordinator.data[parking_id]
+        parking = coordinator.data.get(str(parking_id))
 
         if not parking:
+            _LOGGER.warning(
+                "No coordinator data available for parking '%s'; "
+                "skipping zone creation",
+                parking_id,
+            )
             continue
 
         latitude = parking["latitude"]
