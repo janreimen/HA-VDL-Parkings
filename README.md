@@ -260,4 +260,115 @@ template:
           {{ states('sensor.royal_hamilius_available_spaces') | int(0) }}
 ```
 
-## Data
+## Data source and update interval
+
+Parking information is retrieved from the public VDL data endpoint:
+
+[https://www.vdl.lu/fr/parking/data.json](https://www.vdl.lu/fr/parking/data.json)
+
+The integration polls this endpoint every **60 seconds**.
+
+The actual freshness of the information depends on how frequently VDL updates its published data.
+
+The integration does not control the underlying VDL update frequency.
+
+If the API is temporarily unavailable or returns an unexpected response, the coordinator logs the error and Home Assistant handles the failed update according to its update-coordinator behaviour.
+
+## Troubleshooting
+
+### VDL Parkings does not appear in the integration list
+
+- Verify that the integration directory is named `vdl_parkings`.
+- Verify that it is located under `config/custom_components/`.
+- Restart Home Assistant after installation.
+- Check the Home Assistant logs for loading errors.
+
+### No parking locations are displayed during setup
+
+- Check that Home Assistant has Internet access.
+- Verify that the VDL website is accessible.
+- Check the Home Assistant logs for API or connection errors.
+
+### No entities are created
+
+- Verify that the integration setup completed successfully.
+- Check that at least one parking location was selected.
+- Check **Settings → System → Logs** for errors related to `vdl_parkings`.
+
+### Parking data is not updating
+
+- The integration polls every 60 seconds.
+- Check Home Assistant logs for connection errors or unexpected API responses.
+- Remember that the VDL source data may not be refreshed every minute.
+
+### Parking zones are missing
+
+- Check that the Home Assistant Zone integration is available.
+- Check the logs for errors during parking-zone creation.
+- Reload the VDL Parkings integration to trigger zone setup again.
+- Verify that the selected parking has valid latitude and longitude coordinates in the VDL data.
+
+### A parking zone is duplicated
+
+The integration attempts to reuse existing parking zones by matching their coordinates, parking icon and name.
+
+If duplicates remain, check the zone mapping stored in the integration's configuration entry and the existing zones in Home Assistant.
+
+## Languages
+
+The integration currently provides translations for:
+
+- English
+- French
+
+Home Assistant uses the configured language to display translated entity names and configuration labels.
+
+## Development
+
+Repository:
+
+[https://github.com/janreimen/HA-VDL-Parkings](https://github.com/janreimen/HA-VDL-Parkings)
+
+### Project structure
+
+```text
+custom_components/vdl_parkings/
+├── __init__.py          # Integration setup and unload
+├── api.py               # VDL API client
+├── binary_sensor.py     # Parking status entities
+├── config_flow.py       # UI configuration flow
+├── const.py             # Integration constants
+├── coordinator.py       # Data polling and processing
+├── diagnostics.py       # Diagnostic information
+├── manifest.json        # Integration metadata
+├── sensor.py            # Parking measurement entities
+├── zone.py              # Automatic Home Assistant zone management
+├── brand/               # Integration branding
+└── translations/
+    ├── en.json
+    └── fr.json
+```
+
+### Reporting issues
+
+Bug reports, feature requests and contributions are welcome.
+
+Please use the repository's issue tracker:
+
+[https://github.com/janreimen/HA-VDL-Parkings/issues](https://github.com/janreimen/HA-VDL-Parkings/issues)
+
+When reporting an issue, include:
+
+- Home Assistant Core version.
+- VDL Parkings integration version.
+- Relevant Home Assistant log entries.
+- Steps to reproduce the problem.
+- The affected parking location, if applicable.
+
+## Disclaimer
+
+This is a community-developed Home Assistant integration and is not an official product of Ville de Luxembourg.
+
+It uses publicly accessible parking information published by VDL. Availability and accuracy of the data depend on the source service.
+
+Use the integration at your own risk. Changes to the VDL data service may require updates to this integration.
