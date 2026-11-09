@@ -1,0 +1,69 @@
+{
+  "title": "VDL Parkingen",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Parkingen a Sprooch auswielen",
+        "data": {
+          "parkings": "Parkingen déi iwwerwaacht ginn",
+          "language": "Sprooch"
+        }
+      },
+      "init": {
+        "title": "VDL Parkingen Astellungen",
+        "data": {
+          "parkings": "Ausgewielte Parkingen",
+          "language": "Sprooch"
+        }
+      }
+    },
+    "abort": {
+      "cannot_connect": "Keng Verbindung mat der VDL-API méiglech"
+    },
+    "error": {
+      "select_at_least_one": "Wielt w.e.g. op d'mannst ee Parking aus."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "out_of_service": {
+        "name": "Ausser Betrib"
+      },
+      "full": {
+        "name": "Voll"
+      },
+      "open": {
+        "name": "Op"
+      },
+      "api_reachable": {
+        "name": "API erreechbar"
+      }
+    },
+    "sensor": {
+      "total_capacity": {
+        "name": "Gesamtkapazitéit"
+      },
+      "available_spaces": {
+        "name": "Fräi Plazen"
+      },
+      "occupied_spaces": {
+        "name": "Besate Plazen"
+      },
+      "occupancy_rate": {
+        "name": "Auslaaschtung"
+      }
+    }
+  },
+  "options": {
+    "title": "VDL-Parkingen Astellungen",
+    "step": {
+      "init": {
+        "title": "Parkingen an Aktualiséierungsintervaller astellen",
+        "data": {
+          "parkings": "Parkingen",
+          "language": "Sprooch"
+        }
+      }
+    }
+  }
+}

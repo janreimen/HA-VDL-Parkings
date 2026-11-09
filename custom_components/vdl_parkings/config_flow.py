@@ -1,65 +1,126 @@
-"""Config flow for VDL Parkings integration."""
+"""Config and options flows for VDL Parkings."""
 
 import logging
+import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.helpers import config_validation as cv
 
-import voluptuous as vol
-
 from .api import VdlParkingApi
-from .const import DOMAIN, CONF_PARKINGS
-
+from .const import (
+    DOMAIN, CONF_PARKINGS, CONF_LANGUAGE, CONF_PARKING_SCHEDULES,
+    CONF_HIGH_INTERVAL, CONF_LOW_INTERVAL, CONF_DAY_START, CONF_NIGHT_START,
+    DEFAULT_HIGH_INTERVAL, DEFAULT_LOW_INTERVAL, DEFAULT_DAY_START,
+    DEFAULT_NIGHT_START, LANGUAGES,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
 
+async def _get_parking_choices(hass):
+    from homeassistant.helpers.aiohttp_client import async_get_clientsession
+    payload = await VdlParkingApi(async_get_clientsession(hass)).fetch()
+    items = payload["parking"]
+    return {
+        str(item["id"]): item.get("title", f"Parking {item['id']}")
+        for item in sorted(items, key=lambda p: p.get("title", "").casefold())
+    }
+
+
 class VdlParkingConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for VDL Parkings."""
+    """Set up VDL Parkings."""
 
-    def is_matching(self, _) -> bool:
-        """Check if this flow matches another flow."""
-
-        return False  # No unique matching needed for generic multi-parking setup
-
+    VERSION = 2
 
     async def async_step_user(self, user_input=None):
-        api = VdlParkingApi()
-        data = await api.fetch()
-
-        parkings = data["parking"]
-
-        # mapping title -> id
-        id_map = {
-            p["title"]: str(p["id"])
-            for p in parkings
-        }
-
-        # sorted mapping title -> title
-        parking_map = {
-            p["title"]: p["title"]
-            for p in sorted(parkings, key=lambda p: p["title"].casefold())
-        }
+        errors = {}
+        try:
+            choices = await _get_parking_choices(self.hass)
+        except Exception:
+            return self.async_abort(reason="cannot_connect")
 
         if user_input is not None:
-            selected_ids = [id_map[name] for name in user_input[CONF_PARKINGS]]
-            _LOGGER.info(
-                "Selected %s parkings: %s (ids: %s)",
-                len(selected_ids),
-                user_input[CONF_PARKINGS],
-                selected_ids
-            )
-
-            return self.async_create_entry(
-                title="Parkings",
-                data={CONF_PARKINGS: selected_ids},
-            )
+            selected = user_input[CONF_PARKINGS]
+            if not selected:
+                errors["base"] = "select_at_least_one"
+            else:
+                schedules = {
+                    parking_id: {
+                        CONF_HIGH_INTERVAL: DEFAULT_HIGH_INTERVAL,
+                        CONF_LOW_INTERVAL: DEFAULT_LOW_INTERVAL,
+                        CONF_DAY_START: DEFAULT_DAY_START,
+                        CONF_NIGHT_START: DEFAULT_NIGHT_START,
+                    } for parking_id in selected
+                }
+                return self.async_create_entry(
+                    title="VDL Parkings",
+                    data={CONF_PARKINGS: selected, CONF_PARKING_SCHEDULES: schedules},
+                    options={CONF_LANGUAGE: user_input[CONF_LANGUAGE]},
+                )
 
         schema = vol.Schema({
-            vol.Required(CONF_PARKINGS): cv.multi_select(parking_map)
+            vol.Required(CONF_PARKINGS): cv.multi_select(choices),
+            vol.Required(CONF_LANGUAGE, default="en"): vol.In(LANGUAGES),
         })
+        return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
 
-        return self.async_show_form(
-            step_id="user",
-            data_schema=schema,
-        )
+    @staticmethod
+    def async_get_options_flow(config_entry):
+        return VdlParkingOptionsFlow(config_entry)
+
+
+class VdlParkingOptionsFlow(config_entries.OptionsFlow):
+    """Allow changing selected parkings, language and per-parking polling."""
+
+    def __init__(self, config_entry):
+        self.config_entry = config_entry
+
+    async def async_step_init(self, user_input=None):
+        errors = {}
+        try:
+            choices = await _get_parking_choices(self.hass)
+        except Exception:
+            return self.async_abort(reason="cannot_connect")
+
+        current = list(self.config_entry.data.get(CONF_PARKINGS, []))
+        options = self.config_entry.options
+        current_language = options.get(CONF_LANGUAGE, "en")
+        if user_input is not None:
+            selected = user_input[CONF_PARKINGS]
+            if not selected:
+                errors["base"] = "select_at_least_one"
+            else:
+                schedules = {}
+                previous = options.get(CONF_PARKING_SCHEDULES,
+                                       self.config_entry.data.get(CONF_PARKING_SCHEDULES, {}))
+                for parking_id in selected:
+                    old = previous.get(parking_id, {})
+                    schedules[parking_id] = {
+                        CONF_HIGH_INTERVAL: int(user_input.get(f"high_{parking_id}", old.get(CONF_HIGH_INTERVAL, DEFAULT_HIGH_INTERVAL))),
+                        CONF_LOW_INTERVAL: int(user_input.get(f"low_{parking_id}", old.get(CONF_LOW_INTERVAL, DEFAULT_LOW_INTERVAL))),
+                        CONF_DAY_START: user_input.get(f"day_{parking_id}", old.get(CONF_DAY_START, DEFAULT_DAY_START)),
+                        CONF_NIGHT_START: user_input.get(f"night_{parking_id}", old.get(CONF_NIGHT_START, DEFAULT_NIGHT_START)),
+                    }
+                self.hass.config_entries.async_update_entry(
+                    self.config_entry, data={**self.config_entry.data, CONF_PARKINGS: selected}
+                )
+                return self.async_create_entry(title="", data={
+                    CONF_LANGUAGE: user_input[CONF_LANGUAGE],
+                    CONF_PARKING_SCHEDULES: schedules,
+                })
+
+        schema_fields = {
+            vol.Required(CONF_PARKINGS, default=current): cv.multi_select(choices),
+            vol.Required(CONF_LANGUAGE, default=current_language): vol.In(LANGUAGES),
+        }
+        previous = options.get(CONF_PARKING_SCHEDULES,
+                               self.config_entry.data.get(CONF_PARKING_SCHEDULES, {}))
+        for parking_id in current:
+            title = choices.get(parking_id, f"Parking {parking_id}")
+            values = previous.get(parking_id, {})
+            schema_fields[vol.Optional(f"high_{parking_id}", description={"suggested_value": values.get(CONF_HIGH_INTERVAL, DEFAULT_HIGH_INTERVAL)})] = vol.All(vol.Coerce(int), vol.Range(min=30, max=86400))
+            schema_fields[vol.Optional(f"low_{parking_id}", description={"suggested_value": values.get(CONF_LOW_INTERVAL, DEFAULT_LOW_INTERVAL)})] = vol.All(vol.Coerce(int), vol.Range(min=60, max=86400))
+            schema_fields[vol.Optional(f"day_{parking_id}", description={"suggested_value": values.get(CONF_DAY_START, DEFAULT_DAY_START)})] = str
+            schema_fields[vol.Optional(f"night_{parking_id}", description={"suggested_value": values.get(CONF_NIGHT_START, DEFAULT_NIGHT_START)})] = str
+
+        return self.async_show_form(step_id="init", data_schema=vol.Schema(schema_fields), errors=errors)

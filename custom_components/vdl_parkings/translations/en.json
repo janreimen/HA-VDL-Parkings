@@ -3,14 +3,25 @@
   "config": {
     "step": {
       "user": {
-        "title": "Select parkings to monitor",
+        "title": "Select parkings and language",
         "data": {
-          "parkings": "Parkings"
+          "parkings": "Parkings to monitor",
+          "language": "Language"
+        }
+      },
+      "init": {
+        "title": "VDL Parkings options",
+        "data": {
+          "parkings": "Selected parkings",
+          "language": "Language"
         }
       }
     },
     "abort": {
-      "cannot_connect": "Cannot connect to VDL API"
+      "cannot_connect": "Cannot connect to the VDL API"
+    },
+    "error": {
+      "select_at_least_one": "Select at least one parking."
     }
   },
   "entity": {
@@ -23,6 +34,9 @@
       },
       "open": {
         "name": "Open"
+      },
+      "api_reachable": {
+        "name": "API reachable"
       }
     },
     "sensor": {
@@ -37,6 +51,18 @@
       },
       "occupancy_rate": {
         "name": "Occupancy rate"
+      }
+    }
+  },
+  "options": {
+    "title": "VDL Parkings options",
+    "step": {
+      "init": {
+        "title": "Configure monitored parkings and polling",
+        "data": {
+          "parkings": "Parkings",
+          "language": "Language"
+        }
       }
     }
   }

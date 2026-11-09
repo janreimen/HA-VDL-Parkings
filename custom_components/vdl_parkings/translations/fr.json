@@ -3,26 +3,40 @@
   "config": {
     "step": {
       "user": {
-        "title": "Sélectionnez les parkings à surveiller",
+        "title": "Sélectionner les parkings et la langue",
         "data": {
-          "parkings": "Parkings"
+          "parkings": "Parkings à surveiller",
+          "language": "Langue"
+        }
+      },
+      "init": {
+        "title": "Options VDL Parkings",
+        "data": {
+          "parkings": "Parkings sélectionnés",
+          "language": "Langue"
         }
       }
     },
     "abort": {
-      "cannot_connect": "Impossible de se connecter à l'API VDL"
+      "cannot_connect": "Impossible de se connecter à l’API VDL"
+    },
+    "error": {
+      "select_at_least_one": "Sélectionnez au moins un parking."
     }
   },
   "entity": {
     "binary_sensor": {
       "out_of_service": {
-        "name": "En panne"
+        "name": "Hors service"
       },
       "full": {
         "name": "Complet"
       },
       "open": {
         "name": "Ouvert"
+      },
+      "api_reachable": {
+        "name": "API accessible"
       }
     },
     "sensor": {
@@ -36,7 +50,19 @@
         "name": "Places occupées"
       },
       "occupancy_rate": {
-        "name": "Taux d'occupation"
+        "name": "Taux d’occupation"
+      }
+    }
+  },
+  "options": {
+    "title": "Options VDL Parkings",
+    "step": {
+      "init": {
+        "title": "Configurer les parkings et la fréquence de mise à jour",
+        "data": {
+          "parkings": "Parkings",
+          "language": "Langue"
+        }
       }
     }
   }

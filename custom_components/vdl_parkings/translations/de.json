@@ -1,0 +1,69 @@
+{
+  "title": "VDL Parkings",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Parkhäuser und Sprache auswählen",
+        "data": {
+          "parkings": "Zu überwachende Parkhäuser",
+          "language": "Sprache"
+        }
+      },
+      "init": {
+        "title": "VDL-Parkhäuser Optionen",
+        "data": {
+          "parkings": "Ausgewählte Parkhäuser",
+          "language": "Sprache"
+        }
+      }
+    },
+    "abort": {
+      "cannot_connect": "Verbindung zur VDL-API nicht möglich"
+    },
+    "error": {
+      "select_at_least_one": "Bitte mindestens ein Parkhaus auswählen."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "out_of_service": {
+        "name": "Außer Betrieb"
+      },
+      "full": {
+        "name": "Voll"
+      },
+      "open": {
+        "name": "Geöffnet"
+      },
+      "api_reachable": {
+        "name": "API erreichbar"
+      }
+    },
+    "sensor": {
+      "total_capacity": {
+        "name": "Gesamtkapazität"
+      },
+      "available_spaces": {
+        "name": "Freie Plätze"
+      },
+      "occupied_spaces": {
+        "name": "Belegte Plätze"
+      },
+      "occupancy_rate": {
+        "name": "Auslastung"
+      }
+    }
+  },
+  "options": {
+    "title": "VDL-Parkings Optionen",
+    "step": {
+      "init": {
+        "title": "Parkhäuser und Aktualisierungsintervalle konfigurieren",
+        "data": {
+          "parkings": "Parkhäuser",
+          "language": "Sprache"
+        }
+      }
+    }
+  }
+}
