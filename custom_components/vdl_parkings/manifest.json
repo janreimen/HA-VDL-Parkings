@@ -2,11 +2,11 @@
   "domain": "vdl_parkings",
   "name": "VDL Parkings",
   "version": "0.1.0",
-  "documentation": "https://github.com/techn0phil/vdl-parkings",
-  "issue_tracker": "https://github.com/techn0phil/vdl-parkings/issues",
+  "documentation": "https://github.com/janreimen/HA-VDL-Parkings/",
+  "issue_tracker": "https://github.com/janreimen/HA-VDL-Parkings/issues",
   "requirements": [],
   "dependencies": [],
-  "codeowners": ["@pschmucker"],
+  "codeowners": ["@pschmucker", "@janreimen"],
   "config_flow": true,
   "iot_class": "cloud_polling"
 }
