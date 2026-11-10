@@ -1,9 +1,11 @@
+
 {
   "title": "VDL Parkings",
   "config": {
     "step": {
       "user": {
         "title": "Select parkings and language",
+        "description": "Choose the VDL parkings you want to monitor. You can change these settings later.",
         "data": {
           "parkings": "Parkings to monitor",
           "language": "Language"
@@ -11,6 +13,7 @@
       },
       "init": {
         "title": "VDL Parkings options",
+        "description": "Configure the monitored parkings and their polling schedules.",
         "data": {
           "parkings": "Selected parkings",
           "language": "Language"
@@ -59,6 +62,7 @@
     "step": {
       "init": {
         "title": "Configure monitored parkings and polling",
+        "description": "Choose which parkings to monitor and configure the high-frequency and low-frequency polling intervals. The day and night start times determine which interval is used.",
         "data": {
           "parkings": "Parkings",
           "language": "Language"
@@ -67,3 +71,4 @@
     }
   }
 }
+

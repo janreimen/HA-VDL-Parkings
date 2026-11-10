@@ -1,7 +1,8 @@
+
 {
   "domain": "vdl_parkings",
   "name": "VDL Parkings",
-  "version": "0.1.1",
+  "version": "0.1.4",
   "documentation": "https://github.com/janreimen/HA-VDL-Parkings/",
   "issue_tracker": "https://github.com/janreimen/HA-VDL-Parkings/issues",
   "requirements": [],
@@ -13,3 +14,4 @@
   "config_flow": true,
   "iot_class": "cloud_polling"
 }
+

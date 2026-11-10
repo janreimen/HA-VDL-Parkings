@@ -1,9 +1,11 @@
+
 {
   "title": "VDL Parkings",
   "config": {
     "step": {
       "user": {
         "title": "Sélectionner les parkings et la langue",
+        "description": "Choisissez les parkings VDL que vous souhaitez surveiller. Ces paramètres pourront être modifiés ultérieurement.",
         "data": {
           "parkings": "Parkings à surveiller",
           "language": "Langue"
@@ -11,6 +13,7 @@
       },
       "init": {
         "title": "Options VDL Parkings",
+        "description": "Configurez les parkings surveillés et leurs fréquences de mise à jour.",
         "data": {
           "parkings": "Parkings sélectionnés",
           "language": "Langue"
@@ -30,7 +33,8 @@
         "name": "Hors service"
       },
       "full": {
-        "name": "Complet"
+        "name": "Complet",
+        "description": "Indique si le parking est complet."
       },
       "open": {
         "name": "Ouvert"
@@ -59,6 +63,7 @@
     "step": {
       "init": {
         "title": "Configurer les parkings et la fréquence de mise à jour",
+        "description": "Choisissez les parkings à surveiller et définissez les fréquences de mise à jour rapide et réduite. Les heures de début de journée et de nuit déterminent la fréquence utilisée.",
         "data": {
           "parkings": "Parkings",
           "language": "Langue"
@@ -67,3 +72,4 @@
     }
   }
 }
+

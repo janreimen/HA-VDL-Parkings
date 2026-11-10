@@ -1,14 +1,15 @@
+
 ---
 name: Bug report
 about: Report a problem with the VDL Parkings integration
-title: "[Bug] "
+title: "[Bug]: "
 labels: bug
 assignees: ""
 ---
 
 ## Describe the problem
 
-A clear description of what is not working.
+A clear description of what happened.
 
 ## Expected behaviour
 
@@ -23,23 +24,35 @@ What did you expect to happen?
 ## Home Assistant environment
 
 - Home Assistant version:
-- VDL Parkings integration version:
+- VDL Parkings version:
 - Installation method: HACS / Manual
+- Home Assistant installation type:
 
-## Affected parking facility
+## Integration configuration
 
-Which parking facility is affected?
+- Number of selected parkings:
+- Configured day interval:
+- Configured night interval:
+- Day start:
+- Night start:
+
+Do not include credentials or other sensitive information.
 
 ## Relevant logs
 
-Please include relevant Home Assistant logs.
+Paste relevant Home Assistant log entries here.
 
 ```text
-Paste relevant logs here
+Paste logs here
 ```
 
-Remove personal information, tokens and other sensitive data before submitting.
+## Diagnostics
+
+If possible, download and attach the VDL Parkings integration diagnostics.
+
+Please review the diagnostic file before sharing it publicly.
 
 ## Additional information
 
-Add screenshots or other information that may help to identify the problem.
+Add screenshots or any other information that may help identify the problem.
+

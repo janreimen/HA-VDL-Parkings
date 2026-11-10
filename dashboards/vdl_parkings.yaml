@@ -1,46 +1,46 @@
-# VDL Parkings dashboard starter.
-# Replace the example entity IDs with those created by your HA entity registry.
-# For long-term graphs, Recorder must be enabled and the occupancy sensors
-# must remain available long enough to build statistics.
+
 title: VDL Parkings
 views:
-  - title: Overview
+  - title: Parkings
     path: vdl-parkings
     icon: mdi:parking
-    cards:
-      - type: entities
-        title: API health
-        entities:
-          - binary_sensor.vdl_parkings_api_reachable
-          - sensor.vdl_parkings_api_last_successful_api_response
-          - sensor.vdl_parkings_api_api_consecutive_failures
-      - type: glance
-        title: Example parking status
-        entities:
-          - entity: sensor.vdl_parking_27_available_spaces
-            name: Bouillon – free
-          - entity: sensor.vdl_parking_27_occupancy_rate
-            name: Bouillon – occupancy
-          - entity: binary_sensor.vdl_parking_27_open
-            name: Open
-          - entity: binary_sensor.vdl_parking_27_full
-            name: Full
-      - type: history-graph
-        title: Occupancy – last 24 hours
-        hours_to_show: 24
-        refresh_interval: 60
-        entities:
-          - sensor.vdl_parking_27_occupancy_rate
-          - sensor.vdl_parking_8_occupancy_rate
-      - type: statistics-graph
-        title: Occupancy – long-term trend
-        chart_type: line
-        period: day
-        days_to_show: 30
-        stat_types:
-          - mean
-          - min
-          - max
-        entities:
-          - sensor.vdl_parking_27_occupancy_rate
-          - sensor.vdl_parking_8_occupancy_rate
+    type: sections
+    max_columns: 2
+    sections:
+      - type: grid
+        cards:
+          - type: markdown
+            content: |
+              # VDL Parkings
+
+              Live-Übersicht der ausgewählten Parkhäuser in Luxemburg.
+
+              Die Verfügbarkeit wird durch die VDL-Parkings-Integration aktualisiert.
+
+          - type: custom:vdl-parkings-card
+            title: Parkhäuser
+            show_status: true
+            show_occupancy: true
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: API-Status
+            heading_style: title
+
+          - type: entities
+            title: VDL API diagnostics
+            show_header_toggle: false
+            entities:
+              - entity: sensor.vdl_parkings_api_last_success
+                name: Last successful API response
+              - entity: sensor.vdl_parkings_api_consecutive_failures
+                name: Consecutive API failures
+
+          - type: markdown
+            title: Hinweise
+            content: |
+              - Die Parkhausdaten stammen aus der VDL-API.
+              - Die Aktualisierungsintervalle werden pro Parkhaus in den Integrationsoptionen konfiguriert.
+              - Ein API-Aufruf liefert die Daten aller Parkhäuser. Die individuellen Intervalle steuern, wann die jeweiligen Datensätze in Home Assistant aktualisiert werden.
+

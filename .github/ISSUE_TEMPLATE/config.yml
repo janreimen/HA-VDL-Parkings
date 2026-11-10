@@ -1,0 +1,16 @@
+
+blank_issues_enabled: false
+
+contact_links:
+  - name: Documentation
+    url: https://github.com/janreimen/HA-VDL-Parkings#readme
+    about: Read the installation and configuration documentation.
+
+  - name: Dashboard documentation
+    url: https://github.com/janreimen/HA-VDL-Parkings/blob/main/docs/DASHBOARD.md
+    about: Help with the dashboard and custom Lovelace card.
+
+  - name: Home Assistant Community
+    url: https://community.home-assistant.io/
+    about: Ask general Home Assistant questions.
+

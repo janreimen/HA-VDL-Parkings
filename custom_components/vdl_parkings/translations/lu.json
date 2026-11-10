@@ -1,16 +1,19 @@
+
 {
-  "title": "VDL Parkingen",
+  "title": "VDL Parkings",
   "config": {
     "step": {
       "user": {
         "title": "Parkingen a Sprooch auswielen",
+        "description": "Wielt d'VDL-Parkingen aus, déi iwwerwaacht solle ginn. Dës Astellunge kënnen och spéider geännert ginn.",
         "data": {
           "parkings": "Parkingen déi iwwerwaacht ginn",
           "language": "Sprooch"
         }
       },
       "init": {
-        "title": "VDL Parkingen Astellungen",
+        "title": "VDL-Parkings-Astellungen",
+        "description": "Konfiguréiert déi iwwerwaachte Parkingen an hir Aktualiséierungsintervaller.",
         "data": {
           "parkings": "Ausgewielte Parkingen",
           "language": "Sprooch"
@@ -18,10 +21,10 @@
       }
     },
     "abort": {
-      "cannot_connect": "Keng Verbindung mat der VDL-API méiglech"
+      "cannot_connect": "D'Verbindung mat der VDL-API ass net méiglech"
     },
     "error": {
-      "select_at_least_one": "Wielt w.e.g. op d'mannst ee Parking aus."
+      "select_at_least_one": "Wielt w.e.g. mindestens ee Parking aus."
     }
   },
   "entity": {
@@ -44,10 +47,10 @@
         "name": "Gesamtkapazitéit"
       },
       "available_spaces": {
-        "name": "Fräi Plazen"
+        "name": "Fräi Parkplazen"
       },
       "occupied_spaces": {
-        "name": "Besate Plazen"
+        "name": "Besate Parkplazen"
       },
       "occupancy_rate": {
         "name": "Auslaaschtung"
@@ -55,10 +58,11 @@
     }
   },
   "options": {
-    "title": "VDL-Parkingen Astellungen",
+    "title": "VDL-Parkings-Astellungen",
     "step": {
       "init": {
-        "title": "Parkingen an Aktualiséierungsintervaller astellen",
+        "title": "Parkingen an Aktualiséierungsintervaller konfiguréieren",
+        "description": "Wielt d'Parkingen aus, déi iwwerwaacht solle ginn, a leet déi séier an déi méi lues Aktualiséierungsintervaller fest. D'Ugangszäite fir Dag an Nuecht bestëmmen, wéi en Intervall benotzt gëtt.",
         "data": {
           "parkings": "Parkingen",
           "language": "Sprooch"
@@ -67,3 +71,4 @@
     }
   }
 }
+

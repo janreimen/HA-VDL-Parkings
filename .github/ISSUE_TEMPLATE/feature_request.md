@@ -1,7 +1,8 @@
+
 ---
 name: Feature request
-about: Suggest an improvement or new feature
-title: "[Feature] "
+about: Suggest an improvement or new functionality
+title: "[Feature]: "
 labels: enhancement
 assignees: ""
 ---
@@ -10,14 +11,19 @@ assignees: ""
 
 Describe the problem or limitation you are experiencing.
 
-## Describe the solution
+## Proposed solution
 
-Explain what you would like the integration to do.
+Describe the functionality you would like to see.
 
 ## Alternatives considered
 
 Describe any alternative solutions or workarounds you have considered.
 
-## Additional context
+## Use case
 
-Add screenshots, examples or other information that may help explain the request.
+Explain how this feature would improve your Home Assistant installation.
+
+## Additional information
+
+Add screenshots, examples, configuration snippets or references if relevant.
+

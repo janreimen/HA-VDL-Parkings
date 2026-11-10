@@ -1,16 +1,19 @@
+
 {
   "title": "VDL Parkings",
   "config": {
     "step": {
       "user": {
         "title": "Parkhäuser und Sprache auswählen",
+        "description": "Wähle die VDL-Parkhäuser aus, die überwacht werden sollen. Diese Einstellungen können später geändert werden.",
         "data": {
           "parkings": "Zu überwachende Parkhäuser",
           "language": "Sprache"
         }
       },
       "init": {
-        "title": "VDL-Parkhäuser Optionen",
+        "title": "VDL-Parkings-Optionen",
+        "description": "Konfiguriere die überwachten Parkhäuser und deren Aktualisierungsintervalle.",
         "data": {
           "parkings": "Ausgewählte Parkhäuser",
           "language": "Sprache"
@@ -55,10 +58,11 @@
     }
   },
   "options": {
-    "title": "VDL-Parkings Optionen",
+    "title": "VDL-Parkings-Optionen",
     "step": {
       "init": {
         "title": "Parkhäuser und Aktualisierungsintervalle konfigurieren",
+        "description": "Lege fest, welche Parkhäuser überwacht werden und wie häufig ihre Daten aktualisiert werden. Die Startzeiten für Tag und Nacht bestimmen, welches Intervall verwendet wird.",
         "data": {
           "parkings": "Parkhäuser",
           "language": "Sprache"
@@ -67,3 +71,4 @@
     }
   }
 }
+

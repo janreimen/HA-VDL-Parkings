@@ -3,5 +3,5 @@
   "content_in_root": false,
   "hide_default_branch": false,
   "country": ["FR", "LU", "BE", "DE"],
-  "homeassistant": "2026.3.0"
+  "homeassistant": "2026.11.0"
 }
