@@ -111,10 +111,6 @@ class VdlParkingConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_PARKINGS: selected,
                         CONF_PARKING_SCHEDULES: schedules,
                     },
-                    options={
-                        CONF_LANGUAGE: user_input[CONF_LANGUAGE],
-                        CONF_PARKING_SCHEDULES: schedules,
-                    },
                 )
 
         schema = vol.Schema(
